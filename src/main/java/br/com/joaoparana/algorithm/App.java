@@ -1,19 +1,21 @@
 package br.com.joaoparana.algorithm;
 
+import java.util.Random;
+
 // tentativa de resolver este problema https://www.damninteresting.com/the-birthday-paradox/
 
 public class App {
-	static int samplesQty = 500000;
+	static int samplesQty = 20000;
 	static int personsQty = 49;
 
 	public static void main(String[] args) {
-		System.out.println("Calculando a probabilidade com " + samplesQty + " amostras");
+		System.out.println("Calculando a probabilidade com " + samplesQty + " pessoas");
 		float total = 0;
 		for (int i = 0; i < samplesQty; i++) {
 			total += doIt();
 		}
 
-		System.out.println("com " + personsQty + " amostras temos probabilidade -> " + (total / samplesQty));
+		System.out.println("com " + personsQty + " pessoas temos probabilidade -> " + (total / samplesQty));
 	}
 
 	public static float doIt() {
@@ -35,7 +37,7 @@ public class App {
 		}
 
 		for (int i = 0; i < n; i++) {
-			int wd = new Double(Math.random() * 364).shortValue();
+			int wd = new Random().nextInt(365);
 			if (match[wd]) {
 				return true;
 			} else {
