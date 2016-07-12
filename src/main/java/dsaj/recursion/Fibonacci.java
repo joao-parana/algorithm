@@ -30,9 +30,11 @@ package dsaj.recursion;
  * @author Michael H. Goldwasser
  */
 public class Fibonacci {
+	static long callQty = 0;
 
 	/** Returns the nth Fibonacci number (inefficiently). */
 	public static long fibonacciBad(int n) {
+		callQty++;
 		if (n <= 1)
 			return n;
 		else
@@ -43,15 +45,16 @@ public class Fibonacci {
 	 * Returns array containing the pair of Fibonacci numbers, F(n) and F(n-1).
 	 */
 	public static long[] fibonacciGood(int n) {
+
 		if (n <= 1) {
 			long[] answer = { n, 0 };
 			return answer;
 		} else {
-			long[] temp = fibonacciGood(n - 1); // returns $\{ F_{n-1},\,
-												// F_{n-2} \}$
-			long[] answer = { temp[0] + temp[1], temp[0] }; // we want $\{
-															// F_{n},\, F_{n-1}
-															// \}$
+			callQty++;
+			// returns $\{ F_{n-1},\, F_{n-2} \}$
+			long[] temp = fibonacciGood(n - 1);
+			// we want $\{ F_{n},\, F_{n-1} \}$
+			long[] answer = { temp[0] + temp[1], temp[0] };
 			return answer;
 		}
 	}
@@ -65,16 +68,27 @@ public class Fibonacci {
 		final int limit = 50;
 
 		System.out.println("The good...");
-		for (int n = 0; n < limit; n++)
-			System.out.println(n + ": " + fibonacciGood(n)[0]);
+
+		for (int n = 0; n < limit; n++) {
+			callQty = 0;
+			System.out.println(n + ": " + fibonacciGood(n)[0] + " with callQty = " + callQty);
+		}
 
 		System.out.println();
 		System.out.println("The bad...");
-		for (int n = 0; n < limit; n++)
-			System.out.println(n + ": " + fibonacciBad(n));
+
+		for (int n = 0; n < limit; n++) {
+			callQty = 0;
+			long fib =fibonacciBad(n);
+			// System.out.println(n + ": " + fib + " with callQty =
+			// " + callQty + " metrica 2^(k/2) -> "
+			// + ((Double) Math.pow(2, n / 1.5)).longValue());
+			// System.out.println(callQty + "	" + ((Double) Math.pow(2, n / 2)).longValue());
+			System.out.println(((Double) Math.pow(2, n / 2)).longValue());
+		}
 
 		// Even worse...
-		fibonacci(10); // the infinite one
+		// fibonacci(10); // the infinite one
 	}
 
 }

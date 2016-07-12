@@ -34,7 +34,7 @@ class PowerSlow {
 	 * Computes the value of x raised to the nth power, for nonnegative integer
 	 * n.
 	 */
-	public static double power(double x, int n) {
+	public static double power(double x, double n) {
 		if (n == 0)
 			return 1;
 		else
@@ -65,18 +65,23 @@ public class Power {
 
 	public static void main(String[] args) {
 
-		final double EPSILON = 0.0000000001;
+		final double EPSILON = 0.000000000001;
 		final int BASE = 3;
-
+		for (int n = 0; n < 200; n++) {
+			System.out.println(n + "	" + PowerSlow.power(BASE, n) + " ~ " + Math.pow(BASE, n) + " ~ "
+					+ (PowerSlow.power(BASE, n) - Math.pow(BASE, n)));
+		}
 		int answer = 1;
-		for (int n = 0; n < 20; n++) {
-			if (Math.abs(answer - PowerSlow.power(BASE, n)) > EPSILON)
-				System.out.println("Problem with slow power(" + BASE + "," + n + ")");
-			if (Math.abs(answer - Power.power(BASE, n)) > EPSILON)
+		for (int n = 0; n < 21; n++) {
+			double slow = answer - PowerSlow.power(BASE, n);
+			if (Math.abs(slow) > EPSILON) {
+				System.out.println("Problem with slow power(" + BASE + "," + n + ") - " + Math.abs(slow));
+			}
+			if (Math.abs(answer - Power.power(BASE, n)) > EPSILON) {
 				System.out.println("Problem with fast power(" + BASE + "," + n + ")");
+			}
 			answer *= BASE;
 		}
-
 	}
 
 }

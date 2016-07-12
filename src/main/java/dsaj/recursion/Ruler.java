@@ -81,7 +81,7 @@ public class Ruler {
 		drawRuler(2, 4);
 		System.out.print("\n\nRuler of length 1 with major tick length 5\n");
 		drawRuler(1, 5);
-		System.out.print("\n\nRuler of length 3 with major tick length 3\n");
-		drawRuler(3, 3);
+		System.out.print("\n\nRuler of length 3 with major tick length 5\n");
+		drawRuler(3, 5);
 	}
 }
