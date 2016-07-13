@@ -29,6 +29,8 @@ package net.datastructures;
  * @author Roberto Tamassia
  * @author Michael H. Goldwasser
  */
+
+// Use this class to Implement Round-Robin Scheduling
 public class CircularlyLinkedList<E> {
 	// ---------------- nested Node class ----------------
 	/**
