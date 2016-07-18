@@ -600,7 +600,7 @@ public class TreeMap<K, V> extends AbstractSortedMap<K, V> {
 	/**
 	 * Prints textual representation of tree structure (for debug purpose only).
 	 */
-	protected void dump() {
+	public void dump() {
 		dumpRecurse(root(), 0);
 	}
 
