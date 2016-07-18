@@ -253,9 +253,27 @@ public class App {
 
 }
 
-class MySearchTree {
+interface Tree {
+	// isInternal(p): Returns true if node n has at least one child.
+	boolean isInternal(MyNode n);
+
+	// isExternal(p): Returns true if node n does not have any children.
+	boolean isExternal(MyNode n);
+
+	// isRoot(p): Returns true if node n is the root of the tree.
+	boolean isRoot(MyNode n);
+
+	// size():Returns the number of elements that are contained in the tree.
+	int size();
+
+	// isEmpty(): Returns true if the tree does not contain any elements
+	boolean isEmpty();
+}
+
+class MySearchTree implements Tree {
 	MyNode root = null;
 	Order order = Order.ASC;
+	int size = 0;
 
 	/**
 	 * @param order
@@ -292,14 +310,17 @@ class MySearchTree {
 					root.left = new MyNode(key, value);
 					// System.out.println("eu " + root.value + " left -> " +
 					// value);
+					size++;
 					return;
 				}
 				insert(order, root.left, key, value);
 			} else { // key >= root->key
 				if (root.right == null) {
 					root.right = new MyNode(key, value);
-					// System.out.println("eu " + root.value + " rigth -> " +
+					// System.out.println("eu " + root.value + " rigth -> "
+					// +
 					// value);
+					size++;
 					return;
 				}
 				insert(order, root.right, key, value);
@@ -367,6 +388,31 @@ class MySearchTree {
 		postOrderTransverse(p.left);
 		postOrderTransverse(p.right);
 		System.out.print(p.key + ": " + p.value + "  ");
+	}
+
+	@Override
+	public boolean isInternal(MyNode n) {
+		return n.left == null || n.right == null;
+	}
+
+	@Override
+	public boolean isExternal(MyNode n) {
+		return n.left == null && n.right == null;
+	}
+
+	@Override
+	public boolean isRoot(MyNode n) {
+		return this.root == n;
+	}
+
+	@Override
+	public int size() {
+		return this.size;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.size == 0;
 	}
 
 }
