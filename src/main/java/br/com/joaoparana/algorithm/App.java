@@ -27,9 +27,9 @@ public class App {
 		Random r = new Random(seed);
 		MySearchTree st = new MySearchTree();
 		for (int i = 0; i < 7; i++) {
-			int j = r.nextInt(80) + 10;
+			Integer j = r.nextInt(80) + 10;
 			// System.out.println("valor: " + j);
-			st.insert(j, j);
+			st.insert(j.toString(), j);
 		}
 		System.out.println("••• DUMP");
 		st.dump();
@@ -42,15 +42,15 @@ public class App {
 	}
 
 	public static void main(String[] args) {
-		Random r = new Random(10);
+		Random r = new Random(11870);
 		MySearchTree st = new MySearchTree();
-		st.insert(43, 43);
-		st.insert(70, 70);
-		st.insert(23, 23);
-		st.insert(20, 20);
-		st.insert(56, 56);
-		st.insert(26, 26);
-		st.insert(47, 47);
+		st.insert("43", 43);
+		st.insert("70", 70);
+		st.insert("23", 23);
+		st.insert("20", 20);
+		st.insert("56", 56);
+		st.insert("26", 26);
+		st.insert("47", 47);
 		System.out.println("••• DUMP");
 		st.dump();
 		System.out.println("••• inOrderTransverse");
@@ -64,6 +64,27 @@ public class App {
 		randomTree(1810);
 		randomTree(1957);
 		randomTree(257);
+		st = new MySearchTree();
+		st.insert("Lina", r.nextInt(89) + 10);
+		st.insert("Ana", r.nextInt(89) + 10);
+		st.insert("Lia", r.nextInt(89) + 10);
+		st.insert("Ada", r.nextInt(89) + 10);
+		st.insert("Lua", r.nextInt(89) + 10);
+		st.insert("Sol", r.nextInt(89) + 10);
+		st.insert("Cris", r.nextInt(89) + 10);
+		st.insert("Bia", r.nextInt(89) + 10);
+		st.insert("Rita", r.nextInt(89) + 10);
+		st.insert("Mel", r.nextInt(89) + 10);
+		st.insert("Rosa", r.nextInt(89) + 10);
+		st.insert("Val", r.nextInt(89) + 10);
+		System.out.println("••• DUMP");
+		st.dump();
+		System.out.println("••• inOrderTransverse");
+		st.inOrderTransverse();
+		System.out.println("••• preOrderTransverse");
+		st.preOrderTransverse();
+		System.out.println("••• postOrderTransverse");
+		st.postOrderTransverse();
 		if (true) {
 			return;
 		}
@@ -227,7 +248,7 @@ public class App {
 class MySearchTree {
 	MyNode root = null;
 
-	void insert(int key, int value) {
+	void insert(String key, int value) {
 		if (this.root == null) {
 			this.root = new MyNode(key, value);
 			return;
@@ -235,7 +256,7 @@ class MySearchTree {
 		insert(this.root, key, value);
 	}
 
-	void insert(MyNode root, Integer key, int value) {
+	void insert(MyNode root, String key, int value) {
 		if (root == null) {
 			throw new RuntimeException("Raiz da subarvore não pode ser nula");
 		} else if (key.toString().compareTo(root.key) < 0) {
@@ -268,9 +289,9 @@ class MySearchTree {
 			return;
 		}
 		if (p.left == null && p.right == null) {
-			System.out.println(depth + "\t" + indent + p.value + " (is leaf)");
+			System.out.println(depth + "\t" + indent + p.key + ": " + p.value + " (is leaf)");
 		} else {
-			System.out.println(depth + "\t" + indent + p.value);
+			System.out.println(depth + "\t" + indent + p.key + ": " + p.value);
 			dumpRecurse(p.left, depth + 1);
 			dumpRecurse(p.right, depth + 1);
 		}
@@ -285,7 +306,7 @@ class MySearchTree {
 		if (p == null) {
 			return;
 		}
-		System.out.print(p.value + "  ");
+		System.out.print(p.key + ": " + p.value + "  ");
 		preOrderTransverse(p.left);
 		preOrderTransverse(p.right);
 	}
@@ -300,7 +321,7 @@ class MySearchTree {
 			return;
 		}
 		inOrderTransverse(p.left);
-		System.out.print(p.value + "  ");
+		System.out.print(p.key + ": " + p.value + "  ");
 		inOrderTransverse(p.right);
 	}
 
@@ -315,7 +336,7 @@ class MySearchTree {
 		}
 		postOrderTransverse(p.left);
 		postOrderTransverse(p.right);
-		System.out.print(p.value + "  ");
+		System.out.print(p.key + ": " + p.value + "  ");
 	}
 
 }
@@ -326,7 +347,7 @@ class MyNode {
 	String key;
 	String value;
 
-	public MyNode(Integer key, Integer value) {
+	public MyNode(String key, Integer value) {
 		this.key = key.toString();
 		this.value = value.toString();
 	}
