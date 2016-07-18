@@ -23,11 +23,38 @@ public class App {
 		return counter++;
 	}
 
-	public static void randomTree(int seed) {
-		Random r = new Random(seed);
+	public static void doCaseOne(Order order) {
+		MyRandom r = new MyRandom();
 		MySearchTree st = new MySearchTree();
+		st.insert("Lina", r.getRandom());
+		st.insert("Ana", r.getRandom());
+		st.insert("Lia", r.getRandom());
+		st.insert("Ada", r.getRandom());
+		st.insert("Lua", r.getRandom());
+		st.insert("Sol", r.getRandom());
+		st.insert("Cris", r.getRandom());
+		st.insert("Bia", r.getRandom());
+		st.insert("Rita", r.getRandom());
+		st.insert("Mel", r.getRandom());
+		st.insert("Rosa", r.getRandom());
+		st.insert("Val", r.getRandom());
+		System.out.println("••• DUMP");
+		st.dump();
+		System.out.println("••• inOrderTransverse");
+		st.inOrderTransverse();
+		System.out.println("••• preOrderTransverse");
+		st.preOrderTransverse();
+		System.out.println("••• postOrderTransverse");
+		st.postOrderTransverse();
+	}
+
+	public static void randomTree(long seed) {
+		MyRandom r = new MyRandom();
+		r.setSeed(seed);
+		MySearchTree st = new MySearchTree();
+		st.setOrder(Order.ASC);
 		for (int i = 0; i < 7; i++) {
-			Integer j = r.nextInt(80) + 10;
+			Integer j = r.getRandom();
 			// System.out.println("valor: " + j);
 			st.insert(j.toString(), j);
 		}
@@ -64,27 +91,8 @@ public class App {
 		randomTree(1810);
 		randomTree(1957);
 		randomTree(257);
-		st = new MySearchTree();
-		st.insert("Lina", r.nextInt(89) + 10);
-		st.insert("Ana", r.nextInt(89) + 10);
-		st.insert("Lia", r.nextInt(89) + 10);
-		st.insert("Ada", r.nextInt(89) + 10);
-		st.insert("Lua", r.nextInt(89) + 10);
-		st.insert("Sol", r.nextInt(89) + 10);
-		st.insert("Cris", r.nextInt(89) + 10);
-		st.insert("Bia", r.nextInt(89) + 10);
-		st.insert("Rita", r.nextInt(89) + 10);
-		st.insert("Mel", r.nextInt(89) + 10);
-		st.insert("Rosa", r.nextInt(89) + 10);
-		st.insert("Val", r.nextInt(89) + 10);
-		System.out.println("••• DUMP");
-		st.dump();
-		System.out.println("••• inOrderTransverse");
-		st.inOrderTransverse();
-		System.out.println("••• preOrderTransverse");
-		st.preOrderTransverse();
-		System.out.println("••• postOrderTransverse");
-		st.postOrderTransverse();
+		doCaseOne(Order.ASC);
+
 		if (true) {
 			return;
 		}
@@ -247,33 +255,55 @@ public class App {
 
 class MySearchTree {
 	MyNode root = null;
+	Order order = Order.ASC;
+
+	/**
+	 * @param order
+	 *            the Order to set
+	 */
+	public void setOrder(Order order) {
+		this.order = order;
+	}
 
 	void insert(String key, Object value) {
+		insert(this.order, key, value);
+	}
+
+	void insert(Order order, String key, Object value) {
 		if (this.root == null) {
 			this.root = new MyNode(key, value);
 			return;
 		}
-		insert(this.root, key, value);
+		insert(order, this.root, key, value);
 	}
 
-	void insert(MyNode root, String key, Object value) {
+	void insert(Order order, MyNode root, String key, Object value) {
 		if (root == null) {
 			throw new RuntimeException("Raiz da subarvore não pode ser nula");
-		} else if (key.toString().compareTo(root.key) < 0) {
-			if (root.left == null) {
-				root.left = new MyNode(key, value);
-				// System.out.println("eu " + root.value + " left -> " + value);
-				return;
+		} else {
+			boolean condition = false;
+			if (order.equals(Order.ASC)) {
+				condition = key.toString().compareTo(root.key) < 0;
+			} else {
+				condition = key.toString().compareTo(root.key) > 0;
 			}
-			insert(root.left, key, value);
-		} else { // key >= root->key
-			if (root.right == null) {
-				root.right = new MyNode(key, value);
-				// System.out.println("eu " + root.value + " rigth -> " +
-				// value);
-				return;
+			if (condition) { // Depende da Ordem de classificação
+				if (root.left == null) {
+					root.left = new MyNode(key, value);
+					// System.out.println("eu " + root.value + " left -> " +
+					// value);
+					return;
+				}
+				insert(order, root.left, key, value);
+			} else { // key >= root->key
+				if (root.right == null) {
+					root.right = new MyNode(key, value);
+					// System.out.println("eu " + root.value + " rigth -> " +
+					// value);
+					return;
+				}
+				insert(order, root.right, key, value);
 			}
-			insert(root.right, key, value);
 		}
 	}
 
@@ -341,6 +371,24 @@ class MySearchTree {
 
 }
 
+class MyRandom {
+	Long seed = 1170L;
+
+	/**
+	 * @param seed
+	 *            the seed to set
+	 */
+	public void setSeed(Long seed) {
+		this.seed = seed;
+	}
+
+	Integer getRandom() {
+		Random r = new Random(this.seed);
+		// Valores randomicos entre 101 e 999
+		return r.nextInt(898) + 101;
+	}
+}
+
 class MyNode {
 	public MyNode left;
 	public MyNode right;
@@ -351,4 +399,8 @@ class MyNode {
 		this.key = key.toString();
 		this.value = value;
 	}
+}
+
+enum Order {
+	ASC, DESC
 }
