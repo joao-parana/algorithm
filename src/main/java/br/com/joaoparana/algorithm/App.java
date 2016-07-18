@@ -248,7 +248,7 @@ public class App {
 class MySearchTree {
 	MyNode root = null;
 
-	void insert(String key, int value) {
+	void insert(String key, Object value) {
 		if (this.root == null) {
 			this.root = new MyNode(key, value);
 			return;
@@ -256,7 +256,7 @@ class MySearchTree {
 		insert(this.root, key, value);
 	}
 
-	void insert(MyNode root, String key, int value) {
+	void insert(MyNode root, String key, Object value) {
 		if (root == null) {
 			throw new RuntimeException("Raiz da subarvore não pode ser nula");
 		} else if (key.toString().compareTo(root.key) < 0) {
@@ -345,10 +345,10 @@ class MyNode {
 	public MyNode left;
 	public MyNode right;
 	String key;
-	String value;
+	Object value;
 
-	public MyNode(String key, Integer value) {
+	public MyNode(String key, Object value) {
 		this.key = key.toString();
-		this.value = value.toString();
+		this.value = value;
 	}
 }
