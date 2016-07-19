@@ -281,7 +281,6 @@ class MySearchTree implements Tree {
 	private MyNode root = null;
 	private Order order = Order.ASC;
 	private int size = 0;
-	private int depth = 0;
 	private int maxDepth = 0;
 
 	/**
@@ -304,7 +303,6 @@ class MySearchTree implements Tree {
 	}
 
 	public void insert(Order order, String key, Object value) {
-		this.depth = 0;
 		if (this.root == null) {
 			this.root = new MyNode(key, value);
 			return;
