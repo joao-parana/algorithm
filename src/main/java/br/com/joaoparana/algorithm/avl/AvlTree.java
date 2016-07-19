@@ -21,6 +21,28 @@ package br.com.joaoparana.algorithm.avl;
  * @author Mark Allen Weiss
  */
 class AvlTree {
+
+	public void dump() {
+		if (this.root != null) {
+			dumpRecurse(this.root, 0);
+		}
+	}
+
+	/** This exists for debugging only */
+	private void dumpRecurse(AvlNode p, int depth) {
+		String indent = (depth == 0 ? "" : String.format("%" + (4 * depth) + "s", ""));
+		if (p == null) {
+			return;
+		}
+		if (p.left == null && p.right == null) {
+			System.out.println(p.height + "\t" + indent + p.element + ": " + p.element + " (is leaf)");
+		} else {
+			System.out.println(p.height + "\t" + indent + p.element + ": " + p.element);
+			dumpRecurse(p.left, depth + 1);
+			dumpRecurse(p.right, depth + 1);
+		}
+	}
+
 	/**
 	 * Construct the tree.
 	 */
@@ -97,10 +119,13 @@ class AvlTree {
 	 * Print the tree contents in sorted order.
 	 */
 	public void printTree() {
-		if (isEmpty())
+		if (isEmpty()) {
 			System.out.println("Empty tree");
-		else
+		} else {
 			printTree(root);
+			System.out.println("");
+			dump();
+		}
 	}
 
 	/**
@@ -140,8 +165,10 @@ class AvlTree {
 					t = rotateWithRightChild(t);
 				else
 					t = doubleWithRightChild(t);
-		} else
-			; // Duplicate; do nothing
+		} else {
+			// Duplicate; do nothing
+			System.out.println("\n•••• Elemento " + x + " já existe ! Ignorado");
+		}
 		t.height = max(height(t.left), height(t.right)) + 1;
 		return t;
 	}
@@ -208,7 +235,7 @@ class AvlTree {
 	private void printTree(AvlNode t) {
 		if (t != null) {
 			printTree(t.left);
-			System.out.println(t.element);
+			System.out.print(t.element + "  ");
 			printTree(t.right);
 		}
 	}
@@ -278,22 +305,52 @@ class AvlTree {
 
 	// Test program
 	public static void main(String[] args) {
+		int elemMaxQty = 40, interval = 3, rotateParam = 3;
+		avlTest(elemMaxQty, interval, rotateParam);
+		elemMaxQty = 60;
+		interval = 7;
+		rotateParam = 13;
+		avlTest(elemMaxQty, interval, rotateParam);
+	}
+
+	public static void avlTest(int elemMaxQty, int interval, int rotateParam) {
 		AvlTree t = new AvlTree();
-		final int NUMS = 40;
-		final int GAP = 3;
+		t.insert(new MyInteger(10));
+		t.insert(new MyInteger(12));
+		t.insert(new MyInteger(18));
+		final int NUMS = elemMaxQty;
+		final int GAP = interval;
 
 		System.out.println("Checking... (no more output means success)");
 
 		int counter = 0;
-		for (int i = (GAP * 7); i != 0; i = (i + GAP) % NUMS) {
-			System.out.println((++counter) + " -> i: " + i);
-			t.insert(new MyInteger(i));
+		int minValue = Integer.MAX_VALUE;
+		int maxValue = Integer.MIN_VALUE;
+		int numberToInsert = 0;
+		int displacement = 10;
+		int startPoint = (GAP * rotateParam);
+		if (startPoint > NUMS) {
+			startPoint = startPoint - NUMS;
 		}
+		Long noise = Math.round((Math.random() * 2) - 1);
+		for (int i = startPoint; i != 0; i = ((i + GAP) % NUMS)) {
+			if (counter > 0) {
+				System.out.print(" | ");
+			}
+			numberToInsert = i + displacement + noise.intValue();
 
-		if (NUMS < 40) {
-			t.printTree();
+			minValue = Math.min(numberToInsert, minValue);
+			maxValue = Math.max(numberToInsert, maxValue);
+
+			System.out.print((++counter) + " -> " + numberToInsert);
+
+			t.insert(new MyInteger(numberToInsert));
 		}
-		if (((MyInteger) (t.findMin())).intValue() != 1 || ((MyInteger) (t.findMax())).intValue() != NUMS - 1) {
+		System.out.println("");
+
+		t.printTree();
+
+		if (((MyInteger) (t.findMin())).intValue() != minValue || ((MyInteger) (t.findMax())).intValue() != maxValue) {
 			System.out.println("FindMin or FindMax error!");
 		}
 		counter = 0;
@@ -302,10 +359,14 @@ class AvlTree {
 			if (c == null) {
 				continue;
 			}
-			System.out.println((++counter) + " -> i: " + i);
+			if (counter > 0) { // Separador
+				System.out.print(" | ");
+			}
+			System.out.print((++counter) + " -> " + i);
 			if (((MyInteger) (c)).intValue() != i) {
-				System.out.println("Find error1!");
+				System.out.println("Find error!");
 			}
 		}
+		System.out.println("");
 	}
 }
