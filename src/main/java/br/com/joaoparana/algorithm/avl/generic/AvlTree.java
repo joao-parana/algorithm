@@ -1,4 +1,4 @@
-package br.com.joaoparana.algorithm.avl;
+package br.com.joaoparana.algorithm.avl.generic;
 
 /** 
  * Implementation of an AVL Tree, along with code to test insertions on the tree.

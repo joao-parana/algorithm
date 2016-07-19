@@ -1,4 +1,4 @@
-package br.com.joaoparana.algorithm.avl;
+package br.com.joaoparana.algorithm.avl.generic;
 
 // Test file from http://www.dreamincode.net/forums/topic/214510-working-example-of-avl-tree-remove-method/
 

@@ -1,4 +1,4 @@
-package br.com.joaoparana.algorithm.avl;
+package br.com.joaoparana.algorithm.avl.generic;
 
 import java.util.Random;
 
