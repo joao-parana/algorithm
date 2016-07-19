@@ -48,24 +48,30 @@ public class App {
 		st.postOrderTransverse();
 	}
 
-	public static void randomTree(long seed) {
+	public static MySearchTree randomTree(int elemQty, long seed) {
+		return randomTree(DisplayScope.DISPLAY_ALL, elemQty, seed);
+	}
+
+	public static MySearchTree randomTree(DisplayScope ds, int elemQty, long seed) {
 		MyRandom r = new MyRandom();
 		r.setSeed(seed);
 		MySearchTree st = new MySearchTree();
+		
 		st.setOrder(Order.ASC);
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < elemQty; i++) {
 			Integer j = r.getRandom();
 			// System.out.println("valor: " + j);
 			st.insert(j.toString(), j);
 		}
 		System.out.println("••• DUMP");
-		st.dump();
+		st.dump(ds);
 		System.out.println("••• inOrderTransverse");
 		st.inOrderTransverse();
 		System.out.println("••• preOrderTransverse");
 		st.preOrderTransverse();
 		System.out.println("••• postOrderTransverse");
 		st.postOrderTransverse();
+		return st;
 	}
 
 	public static void main(String[] args) {
@@ -86,11 +92,12 @@ public class App {
 		st.preOrderTransverse();
 		System.out.println("••• postOrderTransverse");
 		st.postOrderTransverse();
-		randomTree(1380);
-		randomTree(4200);
-		randomTree(1810);
-		randomTree(1957);
-		randomTree(257);
+		randomTree(10, 1380);
+		randomTree(10, 4200);
+		randomTree(10, 1810);
+		randomTree(10, 1957);
+		st = randomTree(DisplayScope.DISPLAY_ALL, 2000, 23257);
+		System.out.println("Tree maxDepth: " + st.getMaxDepth());
 		doCaseOne(Order.ASC);
 
 		if (true) {
@@ -271,9 +278,18 @@ interface Tree {
 }
 
 class MySearchTree implements Tree {
-	MyNode root = null;
-	Order order = Order.ASC;
-	int size = 0;
+	private MyNode root = null;
+	private Order order = Order.ASC;
+	private int size = 0;
+	private int depth = 0;
+	private int maxDepth = 0;
+
+	/**
+	 * @return the maxDepth
+	 */
+	public int getMaxDepth() {
+		return this.maxDepth;
+	}
 
 	/**
 	 * @param order
@@ -283,11 +299,12 @@ class MySearchTree implements Tree {
 		this.order = order;
 	}
 
-	void insert(String key, Object value) {
+	public void insert(String key, Object value) {
 		insert(this.order, key, value);
 	}
 
-	void insert(Order order, String key, Object value) {
+	public void insert(Order order, String key, Object value) {
+		this.depth = 0;
 		if (this.root == null) {
 			this.root = new MyNode(key, value);
 			return;
@@ -295,7 +312,8 @@ class MySearchTree implements Tree {
 		insert(order, this.root, key, value);
 	}
 
-	void insert(Order order, MyNode root, String key, Object value) {
+	private void insert(Order order, MyNode root, String key, Object value) {
+
 		if (root == null) {
 			throw new RuntimeException("Raiz da subarvore não pode ser nula");
 		} else {
@@ -329,23 +347,50 @@ class MySearchTree implements Tree {
 	}
 
 	public void dump() {
-		if (this.root != null)
-			dumpRecurse(this.root, 0);
+		dump(DisplayScope.DISPLAY_ALL);
+	}
+
+	public void dump(DisplayScope ds) {
+		if (this.root != null) {
+			updateDepth();
+			if (ds.equals(DisplayScope.DISPLAY_ALL) || ds.equals(DisplayScope.DISPLAY_DUMP)) {
+				dumpRecurse(this.root, 0);
+			}
+			if (ds.equals(DisplayScope.DISPLAY_ALL) || ds.equals(DisplayScope.DISPLAY_MAX_DEPTH)) {
+				System.out.println("Tree maxDepth: " + this.maxDepth);
+			}
+		}
 	}
 
 	/** This exists for debugging only */
-	void dumpRecurse(MyNode p, int depth) {
+	private void dumpRecurse(MyNode p, int depth) {
 		String indent = (depth == 0 ? "" : String.format("%" + (4 * depth) + "s", ""));
 		if (p == null) {
 			return;
 		}
 		if (p.left == null && p.right == null) {
-			System.out.println(depth + "\t" + indent + p.key + ": " + p.value + " (is leaf)");
+			System.out.println(p.depth + "\t" + indent + p.key + ": " + p.value + " (is leaf)");
 		} else {
-			System.out.println(depth + "\t" + indent + p.key + ": " + p.value);
+			System.out.println(p.depth + "\t" + indent + p.key + ": " + p.value);
 			dumpRecurse(p.left, depth + 1);
 			dumpRecurse(p.right, depth + 1);
 		}
+	}
+
+	public void updateDepth() {
+		if (this.root != null) {
+			updateDepth(this.root, 0);
+		}
+	}
+
+	private void updateDepth(MyNode p, int depth) {
+		if (p == null) {
+			return;
+		}
+		p.depth = depth;
+		this.maxDepth = Math.max(this.maxDepth, depth);
+		updateDepth(p.left, depth + 1);
+		updateDepth(p.right, depth + 1);
 	}
 
 	public void preOrderTransverse() {
@@ -419,25 +464,28 @@ class MySearchTree implements Tree {
 
 class MyRandom {
 	Long seed = 1170L;
+	Random r;
 
-	/**
-	 * @param seed
-	 *            the seed to set
-	 */
+	public MyRandom() {
+		this.r = new Random(this.seed);
+	}
+
 	public void setSeed(Long seed) {
 		this.seed = seed;
+		this.r = new Random(this.seed);
 	}
 
 	Integer getRandom() {
-		Random r = new Random(this.seed);
-		// Valores randomicos entre 101 e 999
-		return r.nextInt(898) + 101;
+		// Valores randomicos entre 1001 e 9999
+		return this.r.nextInt(8900) + 1001;
 	}
 }
 
 class MyNode {
 	public MyNode left;
 	public MyNode right;
+	int depth = 0;
+	int height = 0;
 	String key;
 	Object value;
 
@@ -449,4 +497,8 @@ class MyNode {
 
 enum Order {
 	ASC, DESC
+}
+
+enum DisplayScope {
+	DISPLAY_ALL, DISPLAY_DUMP, DISPLAY_MAX_DEPTH
 }
