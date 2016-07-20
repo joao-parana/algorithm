@@ -1,9 +1,12 @@
 package br.com.joaoparana.algorithm;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Random;
 
+import dsaj.sorting.MergeSort;
 import net.datastructures.LinkedPositionalList;
 import net.datastructures.TreeMap;
 
@@ -56,7 +59,7 @@ public class App {
 		MyRandom r = new MyRandom();
 		r.setSeed(seed);
 		MySearchTree st = new MySearchTree();
-		
+
 		st.setOrder(Order.ASC);
 		for (int i = 0; i < elemQty; i++) {
 			Integer j = r.getRandom();
@@ -76,6 +79,14 @@ public class App {
 
 	public static void main(String[] args) {
 		Random r = new Random(11870);
+		Comparator<String> comparator = null;
+		String[] myArray = { "Ana", "Zuleika", "Maria", "Luana", "Yuri" };
+		SortValues<String> processor = new SortValues<>(SortMethod.MergeSort, myArray, comparator);
+		processor.sort();
+		processor.dump();
+		if (true) {
+			return;
+		}
 		MySearchTree st = new MySearchTree();
 		st.insert("43", 43);
 		st.insert("70", 70);
@@ -100,9 +111,6 @@ public class App {
 		System.out.println("Tree maxDepth: " + st.getMaxDepth());
 		doCaseOne(Order.ASC);
 
-		if (true) {
-			return;
-		}
 		TreeMap<Integer, Integer> t = new TreeMap<>();
 		t.put(5, 5);
 		for (int i = 0; i < 7; i++) {
@@ -490,6 +498,66 @@ class MyNode {
 	public MyNode(String key, Object value) {
 		this.key = key.toString();
 		this.value = value;
+	}
+}
+
+enum SortMethod {
+	QuickSort, MergeSort
+}
+
+class NumberComparator<K> implements Comparator<K> {
+	@Override
+	public int compare(K a, K b) {
+		// ascending order
+		return new BigDecimal(a.toString()).compareTo(new BigDecimal(b.toString()));
+	}
+}
+
+class StringComparator<K> implements Comparator<K> {
+	@Override
+	public int compare(K a, K b) {
+		// ascending order
+		return a.toString().compareTo(b.toString());
+	}
+};
+
+class SortValues<K> {
+	SortMethod sortMethod;
+	K[] array;
+	Comparator<K> comparator = null;
+
+	public SortValues(SortMethod sortMethod, K[] array, Comparator<K> comparator) {
+		this.sortMethod = sortMethod;
+		this.array = array;
+
+		if (this.array.length < 1) {
+			throw new RuntimeException("Array não pode ser vazio");
+		}
+		if (this.array[0].getClass().equals(Number.class)) {
+			this.comparator = new NumberComparator<K>();
+		} else {
+			this.comparator = new StringComparator<>();
+		}
+	}
+
+	public void dump() {
+		for (K k : array) {
+			System.out.println(k.toString() + " ");
+		}
+	}
+
+	public K[] sort() {
+		switch (sortMethod) {
+		case QuickSort:
+
+			break;
+		case MergeSort:
+			MergeSort.mergeSort(array, comparator);
+			break;
+		default:
+			break;
+		}
+		return array;
 	}
 }
 

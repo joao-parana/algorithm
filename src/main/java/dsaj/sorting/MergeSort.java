@@ -28,7 +28,7 @@ import java.util.Comparator;
 import net.datastructures.LinkedQueue;
 import net.datastructures.Queue;
 
-class MergeSort {
+public class MergeSort<K> {
 
 	// -------- support for top-down merge-sort of arrays --------
 	/** Merge contents of arrays S1 and S2 into properly sized array S. */
