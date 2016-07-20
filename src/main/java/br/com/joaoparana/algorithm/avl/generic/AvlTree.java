@@ -29,12 +29,12 @@ public class AvlTree<E extends Comparable<? super E>> {
 	 * Construct the tree.
 	 */
 	public AvlTree() {
-		root = null;
+		this.root = null;
 	}
 
 	public void dump() {
 		if (this.root != null) {
-			dumpRecurse(this.root, 0);
+			dumpRecurse(this.root, 0, "Root");
 		}
 	}
 
@@ -42,7 +42,7 @@ public class AvlTree<E extends Comparable<? super E>> {
 	int qtyToPrintLimit = 40;
 	int printed = 0;
 
-	private void dumpRecurse(AvlNode<E> p, int depth) {
+	private void dumpRecurse(AvlNode<E> p, int depth, String prefix) {
 
 		String indent = (depth == 0 ? "" : String.format("%" + (4 * depth) + "s", ""));
 		if (p == null) {
@@ -50,15 +50,29 @@ public class AvlTree<E extends Comparable<? super E>> {
 		}
 		if (p.left == null && p.right == null) {
 			if (printed++ < qtyToPrintLimit) {
-				System.out.println(p.height + "\t" + indent + p.element + ": " + p.element + " (is leaf)");
+				System.out
+						.println(p.height + "\t" + indent + p.element + ": " + p.element + " (is " + prefix + " leaf)");
 			}
 		} else {
 			if (printed++ < qtyToPrintLimit) {
-				System.out.println(p.height + "\t" + indent + p.element + ": " + p.element);
+				System.out.println(p.height + "\t" + indent + p.element + ": " + p.element + " - " + prefix);
 			}
-			dumpRecurse(p.left, depth + 1);
-			dumpRecurse(p.right, depth + 1);
+			dumpRecurse(p.left, depth + 1, "Left");
+			dumpRecurse(p.right, depth + 1, "Right");
 		}
+	}
+
+	/**
+	 * Insert into the tree; duplicates are ignored.
+	 * 
+	 * @param x
+	 *            the item to insert.
+	 */
+	public void insert(E... l) {
+		for (E e : l) {
+			insert(e);
+		}
+
 	}
 
 	int inserted = 0;
@@ -70,7 +84,7 @@ public class AvlTree<E extends Comparable<? super E>> {
 	 *            the item to insert.
 	 */
 	public void insert(E x) {
-		root = insert(x, root);
+		this.root = insert(x, this.root);
 	}
 
 	/**
@@ -211,7 +225,7 @@ public class AvlTree<E extends Comparable<? super E>> {
 			int hl = checkBalance(t.left);
 			int hr = checkBalance(t.right);
 			if (Math.abs(height(t.left) - height(t.right)) > 1 || height(t.left) != hl || height(t.right) != hr)
-				System.out.println("OOPS!!");
+				System.out.println("••• OOPS!!  Balance Problem");
 		}
 
 		return height(t);
@@ -232,17 +246,19 @@ public class AvlTree<E extends Comparable<? super E>> {
 			System.out.println("rotateConters = [ " + this.getRotateCounters()[0] + ", " + this.getRotateCounters()[1]
 					+ ", " + this.getRotateCounters()[2] + ", " + this.getRotateCounters()[3] + " ]");
 		}
-		if (t == null)
+		if (t == null) {
 			return new AvlNode<>(x, null, null);
-
+		}
 		int compareResult = x.compareTo(t.element);
 
-		if (compareResult < 0)
+		if (compareResult < 0) {
 			t.left = insert(x, t.left);
-		else if (compareResult > 0)
+		} else if (compareResult > 0) {
 			t.right = insert(x, t.right);
-		else
-			; // Duplicate; do nothing
+		} else {
+			// Duplicate; do nothing
+			System.out.println("\n•••• Elemento " + x + " já existe ! Ignorado");
+		}
 		return balance(t);
 	}
 
@@ -399,6 +415,12 @@ public class AvlTree<E extends Comparable<? super E>> {
 
 	// Test program
 	public static void main(String[] args) {
+		AvlTree<String> s = new AvlTree<>();
+		s.insert("Ada", "Beth", "Bia", "Cris", "Lia", "Ana", "Mel", "Rosa", "Rita", "Sol", "Lua", "Lina", "Zuca");
+		s.printTree();
+		s.dump();
+		s.remove("Ana");
+		s.dump();
 		AvlTree<Integer> t = new AvlTree<>();
 		final int SMALL = 400;
 		final int NUMS = 1000000; // must be even
